@@ -7,6 +7,7 @@ import java.lang.foreign.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.function.BiFunction;
 
 public class NativeImageExample {
 
@@ -18,6 +19,7 @@ public class NativeImageExample {
             throw new RuntimeException(e);
         }
     }
+
     public static long getByIndex(long[] array, int index) {
         try {
             var getArrayByIndexMH = Linker.nativeLinker().downcallHandle(
@@ -30,16 +32,20 @@ public class NativeImageExample {
             throw new RuntimeException(e);
         }
     }
+
     public static int capturedLambdaUpcall(String someString) {
-        interface Add {
-            int add(int a, int b);
-        }
         try {
-            MethodHandle methodHandle = MethodHandles.lookup().findVirtual(Add.class, "add", MethodType.methodType(int.class, int.class, int.class));
-            methodHandle = methodHandle.bindTo((Add) (a, b) -> {
-                System.out.println(someString);
+            BiFunction<Integer, Integer, Integer> c = (_, _) -> {
+                System.out.println("capturedLambdaUpcall:" + someString);
                 return someString.length();
-            });
+            };
+
+            MethodHandle methodHandle = MethodHandles.lookup().findVirtual(BiFunction.class, "apply", MethodType.methodType(Object.class, Object.class, Object.class))
+                    .bindTo(c);
+
+            methodHandle = methodHandle.asType(
+                    MethodType.methodType(int.class, int.class, int.class)
+            );
 
             var capturedLambdaUpcallStub = Linker.nativeLinker().upcallStub(
                     methodHandle,
