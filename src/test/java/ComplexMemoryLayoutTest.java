@@ -3,8 +3,10 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
 import java.lang.foreign.Arena;
+import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
+import java.lang.invoke.VarHandle;
 
 public class ComplexMemoryLayoutTest {
 

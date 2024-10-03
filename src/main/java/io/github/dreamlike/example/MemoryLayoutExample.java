@@ -29,7 +29,7 @@ public class MemoryLayoutExample {
     static {
         try {
             MethodHandles.lookup().ensureInitialized(LibLoader.class);
-            MemorySegment fp = NativeLookup.INSTANCE.find("testPersonSize").get();
+            MemorySegment fp = NativeLookup.INSTANCE.find("person_size").get();
             NATIVE_STRUCT_SIZE = ((int) Linker.nativeLinker().downcallHandle(
                     fp,
                     FunctionDescriptor.of(ValueLayout.JAVA_INT)

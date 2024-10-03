@@ -1,4 +1,3 @@
-rm -f ../resources/libperson.so
+rm -f ../../../libperson.so
 cargo build
-mkdir -p ../resources
 mv target/debug/libperson.so ../../../libperson.so
